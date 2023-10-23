@@ -72,7 +72,7 @@ public class DiaryService {
 
     @Transactional(readOnly = true)
     public List<Diary> readDiary(LocalDate date) {
-        if (date.isAfter(LocalDate.ofYearDay(3050, 1))) {
+        if (date.isAfter(LocalDate.ofYearDay(2023, 1))) {
             throw new InvalidDate();
         }
 
@@ -80,6 +80,7 @@ public class DiaryService {
         return diaryRepository.findAllByDate(date);
     }
 
+    @Transactional(readOnly = true)
     public List<Diary> readDiaries(LocalDate startDate, LocalDate endDate) {
         return diaryRepository.findAllByDateBetween(startDate, endDate);
     }
@@ -113,10 +114,14 @@ public class DiaryService {
             }
 
             StringBuilder sb = new StringBuilder();
-            String inputLine;
-            while ((inputLine = br.readLine()) != null) {
+            while (true) {
+                String inputLine = br.readLine();
+                if (inputLine == null) {
+                    break;
+                }
                 sb.append(inputLine);
             }
+
             br.close();
 
             return sb.toString();

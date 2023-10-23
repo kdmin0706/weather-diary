@@ -29,7 +29,8 @@ public class DiaryController {
 
     @GetMapping("/read/diary")
     @ApiOperation("선택한 날짜의 모든 일기 데이터를 가져옵니다")
-    List<Diary> readDiary(@RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
+    List<Diary> readDiary(@RequestParam @DateTimeFormat(iso = ISO.DATE)
+                          @ApiParam(value = "조회할 날짜", example = "2023-01-01") LocalDate date) {
         return diaryService.readDiary(date);
     }
 
@@ -49,7 +50,8 @@ public class DiaryController {
     }
 
     @DeleteMapping("/delete/diary")
-    void deleteDiary(@RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date) {
+    void deleteDiary(@RequestParam @DateTimeFormat(iso = ISO.DATE)
+                     @ApiParam(value = "삭제할 날짜", example = "2023-01-01") LocalDate date) {
         diaryService.deleteDiary(date);
     }
 }
