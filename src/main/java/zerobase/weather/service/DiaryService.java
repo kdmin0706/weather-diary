@@ -1,5 +1,6 @@
 package zerobase.weather.service;
 
+import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,11 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import zerobase.weather.WeatherApplication;
 import zerobase.weather.domain.DateWeather;
 import zerobase.weather.domain.Diary;
-import zerobase.weather.error.InvalidDate;
+import zerobase.weather.exception.InvalidDateException;
 import zerobase.weather.repository.DateWeatherRepository;
 import zerobase.weather.repository.DiaryRepository;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,18 +31,14 @@ import java.util.Map;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DiaryService {
 
-    @Value("${openweathermap.key}")
-    private String apiKey;
     private final DiaryRepository diaryRepository;
     private final DateWeatherRepository dateWeatherRepository;
-    private static final Logger logger = LoggerFactory.getLogger(WeatherApplication.class);
+    private final ApiService apiService;
 
-    public DiaryService(DiaryRepository diaryRepository, DateWeatherRepository dateWeatherRepository) {
-        this.diaryRepository = diaryRepository;
-        this.dateWeatherRepository = dateWeatherRepository;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(WeatherApplication.class);
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date, String text) {
@@ -73,7 +71,7 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public List<Diary> readDiary(LocalDate date) {
         if (date.isAfter(LocalDate.ofYearDay(2023, 1))) {
-            throw new InvalidDate();
+            throw new InvalidDateException();
         }
 
         logger.debug("readDiary");
@@ -94,41 +92,6 @@ public class DiaryService {
 
     public void deleteDiary(LocalDate date) {
         diaryRepository.deleteAllByDate(date);
-    }
-
-    private String getWeatherString() {
-        String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=seoul&appid=" + apiKey;
-        try {
-            URL url = new URL(apiUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-
-            //코드에 따른 입력스트림 파악하기!
-            BufferedReader br;
-            if (responseCode == 200) {
-                br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-            }
-
-            StringBuilder sb = new StringBuilder();
-            while (true) {
-                String inputLine = br.readLine();
-                if (inputLine == null) {
-                    break;
-                }
-                sb.append(inputLine);
-            }
-
-            br.close();
-
-            return sb.toString();
-
-        } catch (Exception e) {
-            return "failed to get response";
-        }
     }
 
     private Map<String, Object> parseWeather(String jsonString) {
@@ -156,15 +119,13 @@ public class DiaryService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 1 * * *")    //[초, 분, 시, 일, 월, 년]
     public void saveWeatherDate() {
-        logger.info("날씨 데이터 저장 완료");
         dateWeatherRepository.save(getWeatherFromApi());
     }
 
     private DateWeather getWeatherFromApi() {
         //open weather map에서 날씨 데이터 가져오기
-        String weatherData = getWeatherString();
+        String weatherData = apiService.getWeatherString();
 
         //받아온 날씨 데이터 파싱하기
         Map<String, Object> parsedWeather = parseWeather(weatherData);
@@ -182,7 +143,7 @@ public class DiaryService {
 
     private DateWeather getWeatherFromApi(LocalDate date) {
         //open weather map에서 날씨 데이터 가져오기
-        String weatherData = getWeatherString();
+        String weatherData = apiService.getWeatherString();
 
         //받아온 날씨 데이터 파싱하기
         Map<String, Object> parsedWeather = parseWeather(weatherData);
