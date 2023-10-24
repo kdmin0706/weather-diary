@@ -43,12 +43,14 @@ public class DiaryController {
     }
 
     @PutMapping("/update/diary")
+    @ApiOperation("특정 날짜의 첫번째 일기 수정")
     void updateDiary(@RequestParam @DateTimeFormat(iso = ISO.DATE) LocalDate date,
                      @RequestBody String text) {
         diaryService.updateDiary(date, text);
     }
 
     @DeleteMapping("/delete/diary")
+    @ApiOperation("특정 날짜의 모든 일기 삭제")
     void deleteDiary(@RequestParam @DateTimeFormat(iso = ISO.DATE)
                      @ApiParam(value = "삭제할 날짜", example = "2023-01-01") LocalDate date) {
         diaryService.deleteDiary(date);

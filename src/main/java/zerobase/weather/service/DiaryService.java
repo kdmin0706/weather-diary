@@ -63,7 +63,7 @@ public class DiaryService {
 
     @Transactional(readOnly = true)
     public List<Diary> readDiary(LocalDate date) {
-        if (date.isAfter(LocalDate.ofYearDay(2023, 1))) {
+        if (date.isAfter(LocalDate.ofYearDay(2050, 1))) {
             throw new InvalidDateException();
         }
 
