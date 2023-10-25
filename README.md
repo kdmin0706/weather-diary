@@ -3,10 +3,12 @@
 ## 1️⃣ 프로젝트 소개
  > 외부 API를 이용하여 날씨 데이터를 가져와 일기를 작성하는 프로젝트입니다.
 
-## 2️⃣ 공통 요구 사항
-- 테스트 코드 작성
-- 외부 API의 데이터 활용
-- JPA 방식으로 MySQL 사용
+## 2️⃣ Tech Stack
+- Language : `Java`
+- Build : `gradle`
+- DataBase : `MySQL`
+- JDK : `JDK 1.8`
+- Library : `Lombok`, `spring-web`, `swagger`, `logback`
 
 ## 3️⃣ 최종 구현 API 리스트  
  ✅ POST / create / diary
