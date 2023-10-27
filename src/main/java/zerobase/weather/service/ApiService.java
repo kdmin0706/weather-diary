@@ -1,5 +1,6 @@
 package zerobase.weather.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
+@RequiredArgsConstructor
 public class ApiService {
     @Value("${openweathermap.key}")
     private String apiKey;
