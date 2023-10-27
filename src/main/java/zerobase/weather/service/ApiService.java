@@ -10,7 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
-@RequiredArgsConstructor
 public class ApiService {
     @Value("${openweathermap.key}")
     private String apiKey;
