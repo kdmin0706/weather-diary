@@ -31,7 +31,7 @@ public class DiaryService {
     private final DateWeatherRepository dateWeatherRepository;
     private final ApiService apiService;
 
-    private static final Logger logger = LoggerFactory.getLogger(WeatherApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiaryService.class);
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date, String text) {
@@ -111,7 +111,6 @@ public class DiaryService {
         return resultMap;
     }
 
-    @Transactional
     public void saveWeatherDate() {
         dateWeatherRepository.save(getWeatherFromApi());
     }

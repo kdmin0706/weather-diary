@@ -15,11 +15,11 @@ import static zerobase.weather.type.ErrorCode.INVALID_REQUEST;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(WeatherApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ErrorResponse HandleAllException(Exception e) {
+    public ErrorResponse handleAllException(Exception e) {
         logger.error("Exception is occurred.", e);
 
         return new ErrorResponse(INTERNAL_SERVER_ERROR,
