@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import zerobase.weather.WeatherApplication;
 import zerobase.weather.dto.ErrorResponse;
 
 import static zerobase.weather.type.ErrorCode.INTERNAL_SERVER_ERROR;
